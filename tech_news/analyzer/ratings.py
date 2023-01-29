@@ -1,11 +1,11 @@
 from operator import itemgetter
 from tech_news.database import find_news
+from collections import Counter
 
 
 # Requisito 10
 def top_5_news():
-    news = find_news()
-    result = sorted(news, key=itemgetter(
+    result = sorted(find_news(), key=itemgetter(
         'comments_count', "title"), reverse=True)
     if len(result) > 5:
         result = result[:5]
@@ -15,4 +15,10 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    categories = Counter(new["category"] for new in find_news())
+
+    result = sorted(
+      [(category, categories[category]) for category in categories],
+      key=lambda x: (x[0], -x[1]))
+
+    return [tup[0] for tup in sorted(result, key=lambda x: -x[1])][:5]
